@@ -42,8 +42,10 @@ $ dict hello world
 
 ### cache.py
 
-- [x] `~.cached` を検索したり `scraping.py` から出力されたブツを
-      create したり
+- [x] find cache
+- [x] create cache
+- [x] check where cache is existed
+- [x] create cache dir(keep cached files)
 
 ### cli.py
 
@@ -61,4 +63,4 @@ $ dict hello world
 ### scraping.py
 
 - [ ] 取得した html を `BeautifulSoup` で 要素抽出
-      利用しやすい形に変換(`dict`?)
+- [ ] html -> scraping -> dict -> json(cache) でよいはず ?
