@@ -34,7 +34,6 @@ class Scraper:
             "description": self.get_description(),
         }
         word_info.update(self.get_part_of_speech())
-
         return word_info
 
     def get_headword(self) -> str:
@@ -91,7 +90,7 @@ class Scraper:
         for item in article.find_all("div", "level0"):
             # part of speech article header
             if pos := item.find(class_="KnenjSub"):
-                part_of_speech = pos.contents[2].get_text().strip()
+                part_of_speech = pos.contents[1]
                 d_part_of_speech[part_of_speech] = []
 
             if pos := item.find(class_="lvlNH"):
