@@ -1,4 +1,5 @@
 # src/cache.py
+import json
 from pathlib import Path
 
 
@@ -45,21 +46,24 @@ class Cache:
         @return: return True when cache file is found
         """
         path = cls.cache_path()
-        return (path / f"{filename}.html").exists()
+        return (path / f"{filename}.json").exists()
 
     @classmethod
-    def read_cache(cls, filename: str) -> str:
+    def read_cache(cls, filename: str) -> dict:
         """
         read cache
 
         @param filename:
         @return:
         """
-        path = cls.cache_path() / f"{filename}.html"
-        html = path.read_text(encoding="utf-8")
-        return html
+        path = cls.cache_path() / f"{filename}.json"
+
+        with path.open(encoding="utf-8") as f:
+            return json.load(f)
 
     @classmethod
-    def create_cache(cls, filename: str, html: str) -> None:
-        path = cls.cache_path() / f"{filename}.html"
-        path.write_text(data=html, encoding="utf-8")
+    def create_cache(cls, filename: str, parsed_html: dict) -> None:
+        path = cls.cache_path() / f"{filename}.json"
+
+        with path.open("w", encoding="utf-8") as f:
+            json.dump(parsed_html, f, indent=2, ensure_ascii=False)

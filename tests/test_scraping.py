@@ -1,8 +1,8 @@
 # tests/test_scraping.py
 import unittest
+from pathlib import Path
 from typing import Dict
 
-from src.cache import Cache
 from src.scraping import Scraper
 
 
@@ -13,12 +13,18 @@ class TestScraping(unittest.TestCase):
     def setUpClass(cls) -> None:
         """
         cls.soups is heavy objects, so run once for the whole class.
+
+        test cache file are on
+            ~/.cache/dict/<word>.html
         """
         words = ["hello", "hoge", "take", "beautifulness", "kjsdhfkjds"]
 
         for word in words:
-            if Cache.find_path(word):
-                cls.soups[word] = Scraper(Cache.read_cache(word))
+            path = (Path(".") / ".cache" / "dict").expanduser()
+            filepath = path / f"{word}.html"
+
+            if filepath.exists():
+                cls.soups[word] = Scraper(filepath.read_text())
             else:
                 raise ValueError("wow", word)
 
@@ -63,7 +69,6 @@ class TestScraping(unittest.TestCase):
     def test_get_part_of_speech(self):
         """
         NOTE: I don't know how to test get_part_of_speech
-        @return:
         """
         tests = [
             # ("hello", {"word": []}),
@@ -78,9 +83,12 @@ class TestScraping(unittest.TestCase):
                 assert TestScraping.soups[word].get_part_of_speech() == part_of_speech
 
     def test_construct(self):
+        """
+        NOTE: HOW :D ?
+        """
         tests = [
             "hello",
-            "take",
+            # "take",
             "hoge",
             "beautifulness",
         ]
