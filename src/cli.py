@@ -1,6 +1,10 @@
 # src/cli.py
 class CLI:
     @staticmethod
+    def title(msg: str):
+        print(f">>> {msg}")
+
+    @staticmethod
     def print(cached_json: dict):
         """
         print cached json prettier

@@ -14,18 +14,16 @@ def main():
         html = fetch_html_from_weblio(input_words)
         scraper = Scraper(html=html)
 
-        print("create cache")
+        CLI.title("create cache :D")
 
         if scraper.exists:
             Cache.create_cache(input_words, scraper.construct())
         else:
             Cache.create_cache(input_words, {"NotFound": ":^)"})
-
         CLI.print(Cache.read_cache(input_words))
-        return
-
-    print("use cache")
-    CLI.print(Cache.read_cache(input_words))
+    else:
+        CLI.title("use cache :P")
+        CLI.print(Cache.read_cache(input_words))
 
 
 if __name__ == "__main__":
