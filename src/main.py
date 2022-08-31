@@ -1,6 +1,7 @@
 # src/main.py
 from api import fetch_html_from_weblio
 from cache import Cache
+from cli import CLI
 from parsing import parsing
 from scraping import Scraper
 
@@ -18,14 +19,13 @@ def main():
         if scraper.exists:
             Cache.create_cache(input_words, scraper.construct())
         else:
-            Cache.create_cache(input_words, {"headword": "Not Found :^)"})
+            Cache.create_cache(input_words, {"NotFound": ":^)"})
 
-        print(Cache.read_cache(input_words))
+        CLI.print(Cache.read_cache(input_words))
         return
 
     print("use cache")
-    cache_file = Cache.read_cache(input_words)
-    print(cache_file)
+    CLI.print(Cache.read_cache(input_words))
 
 
 if __name__ == "__main__":
