@@ -44,7 +44,8 @@ class TestScraping(unittest.TestCase):
         ]
 
         for word, headword in tests:
-            assert TestScraping.soups[word].get_headword() == headword
+            if TestScraping.soups[word].exists:
+                assert TestScraping.soups[word].get_headword() == headword
 
     def test_get_description(self):
         tests = [
@@ -56,4 +57,5 @@ class TestScraping(unittest.TestCase):
         ]
 
         for word, description in tests:
-            assert TestScraping.soups[word].get_description() == description
+            if TestScraping.soups[word].exists:
+                assert TestScraping.soups[word].get_description() == description
