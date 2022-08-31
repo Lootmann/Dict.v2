@@ -3,7 +3,13 @@ from pathlib import Path
 
 
 class Cache:
-    PARENT_PATH = Path(".").parent / ".cache" / "dict"
+    """
+    Cache Manager
+
+    NOTE: PARENT_PATH should be '~/.cache/dict'
+    """
+
+    PARENT_PATH = Path("~/program/projects/Dict.v2").expanduser() / ".cache" / "dict"
 
     @classmethod
     def cache_path(cls) -> Path:
