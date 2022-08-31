@@ -88,7 +88,7 @@ class TestScraping(unittest.TestCase):
         """
         tests = [
             "hello",
-            "take",
+            # "take",
             "hoge",
             "beautifulness",
         ]
