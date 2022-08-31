@@ -59,3 +59,32 @@ class TestScraping(unittest.TestCase):
         for word, description in tests:
             if TestScraping.soups[word].exists:
                 assert TestScraping.soups[word].get_description() == description
+
+    def test_get_part_of_speech(self):
+        """
+        NOTE: I don't know how to test get_part_of_speech
+        @return:
+        """
+        tests = [
+            # ("hello", {"word": []}),
+            # ("take", {"word": []}),
+            ("hoge", {}),
+            ("beautifulness", {}),
+            ("kjsdhfkjds", "hige"),
+        ]
+
+        for word, part_of_speech in tests:
+            if TestScraping.soups[word].exists:
+                assert TestScraping.soups[word].get_part_of_speech() == part_of_speech
+
+    def test_construct(self):
+        tests = [
+            "hello",
+            "take",
+            "hoge",
+            "beautifulness",
+        ]
+
+        for word in tests:
+            if TestScraping.soups[word].exists:
+                print(TestScraping.soups[word].construct())
