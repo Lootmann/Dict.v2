@@ -16,10 +16,10 @@ def main():
         print("create cache")
 
         if scraper.exists:
-            Cache.create_cache(input_words, str(scraper))
+            Cache.create_cache(input_words, scraper.construct())
             print(str(scraper)[:20])
         else:
-            Cache.create_cache(input_words, str("not found"))
+            Cache.create_cache(input_words, {"headword": "Not Found :^)"})
             print("not found")
 
         return
