@@ -17,16 +17,15 @@ def main():
 
         if scraper.exists:
             Cache.create_cache(input_words, scraper.construct())
-            print(str(scraper)[:20])
         else:
             Cache.create_cache(input_words, {"headword": "Not Found :^)"})
-            print("not found")
 
+        print(Cache.read_cache(input_words))
         return
 
     print("use cache")
     cache_file = Cache.read_cache(input_words)
-    print(cache_file[:20])
+    print(cache_file)
 
 
 if __name__ == "__main__":
