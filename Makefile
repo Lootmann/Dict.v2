@@ -4,3 +4,7 @@ run:
 .PHONY: test
 test:
 	pytest -sv
+
+.PHONY: clean
+clean:
+	rm ./.cache/dict/hello.json
