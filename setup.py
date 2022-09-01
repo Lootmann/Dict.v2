@@ -12,7 +12,7 @@ setup(
     version="0.1",
     description="Simple English Japanese Dictionary via WeblioAPI",
     author="Lootmann",
-    packages=find_packages(where="dict"),
+    packages=find_packages(),
     entry_points={
         "console_scripts": [
             "dict=dict.main:main",
