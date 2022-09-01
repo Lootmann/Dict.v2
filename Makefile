@@ -3,7 +3,7 @@ run:
 
 .PHONY: test
 test:
-	pytest -sv
+	pytest -svv
 
 .PHONY: clean
 clean:
