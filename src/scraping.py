@@ -34,6 +34,7 @@ class Scraper:
             "description": self.get_description(),
         }
         word_info.update(self.get_part_of_speech())
+        word_info.update(self.get_conjugation_table())
         return word_info
 
     def get_headword(self) -> str:
@@ -55,7 +56,7 @@ class Scraper:
         description = self._soup.find(class_="content-explanation ej")
         return description.get_text().strip()
 
-    def get_conjugation_table(self) -> Dict[str, List[str]]:
+    def get_conjugation_table(self) -> Dict[str, Dict[str, str]]:
         """
         find conjugation table class='conjugateRowR'
 
@@ -78,10 +79,9 @@ class Scraper:
         # only conjugateRowR
         if len(tableL) == 1:
             # and when the word has this pattern, tableR is one elem of list.
-            table = tableR[0]
-            for th, td in zip(table.find_all("th"), table.find_all("td")):
+            for th, td in zip(tableR[0].find_all("th"), tableR[0].find_all("td")):
                 conjugation_table[th.get_text().split()[0]] = td.get_text().split()[0]
-            return conjugation_table
+            return {"conjugation_table": conjugation_table}
 
         else:
             # both RowL and RowR
@@ -92,8 +92,7 @@ class Scraper:
                 conjugation_table[span_str[1:-1]] = a_str
 
             conjugation_table["原形"] = self.get_headword()
-
-            return conjugation_table
+            return {"conjugation_table": conjugation_table}
 
     def get_part_of_speech(self) -> Dict[str, List[str]]:
         """
