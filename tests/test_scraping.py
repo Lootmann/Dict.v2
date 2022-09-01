@@ -17,7 +17,7 @@ class TestScraping(unittest.TestCase):
         test cache file are on
             ~/.cache/dict/<word>.html
         """
-        words = ["hello", "hoge", "take", "beautifulness", "kjsdhfkjds"]
+        words = ["hello", "hoge", "take", "beautifulness", "set", "kjsdhfkjds"]
 
         for word in words:
             path = (Path(".") / ".cache" / "dict").expanduser()
@@ -95,4 +95,15 @@ class TestScraping(unittest.TestCase):
 
         for word in tests:
             if TestScraping.soups[word].exists:
-                print(TestScraping.soups[word].construct())
+                TestScraping.soups[word].construct()
+
+    def test_get_conjugation_table(self):
+        tests = [
+            ("hello", {}),
+            ("take", {"原形": "take", "現在分詞": "taking", "過去形": "took", "過去分詞": "taken", "三人称単数現在": "takes"}),
+            ("set", {"原形": "set", "現在分詞": "setting", "過去形": "set", "過去分詞": "set", "三人称単数現在": "sets"}),
+        ]
+
+        for word, table in tests:
+            if TestScraping.soups[word].exists:
+                assert TestScraping.soups[word].get_conjugation_table() == table

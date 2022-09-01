@@ -55,6 +55,46 @@ class Scraper:
         description = self._soup.find(class_="content-explanation ej")
         return description.get_text().strip()
 
+    def get_conjugation_table(self) -> Dict[str, List[str]]:
+        """
+        find conjugation table class='conjugateRowR'
+
+        conjugate table has 2 types.
+
+        1. a word has conjugateRowL and conjugateRowR
+        2. a word has only conjugateRowR (RowL is empty)
+
+        @return: dict - { part_of_speech: spell, ... }
+        """
+        tableL = self._soup.find_all("td", class_="conjugateRowL")
+        tableR = self._soup.find_all("td", class_="conjugateRowR")
+
+        # no conjugations
+        if not tableL and not tableR:
+            return {}
+
+        conjugation_table = {}
+
+        # only conjugateRowR
+        if len(tableL) == 1:
+            # and when the word has this pattern, tableR is one elem of list.
+            table = tableR[0]
+            for th, td in zip(table.find_all("th"), table.find_all("td")):
+                conjugation_table[th.get_text().split()[0]] = td.get_text().split()[0]
+            return conjugation_table
+
+        else:
+            # both RowL and RowR
+            for a, span in zip(tableR[0].find_all("a"), tableR[0].find_all("span")):
+                a_str = a.get_text().strip()
+                span_str = span.get_text().strip()
+
+                conjugation_table[span_str[1:-1]] = a_str
+
+            conjugation_table["原形"] = self.get_headword()
+
+            return conjugation_table
+
     def get_part_of_speech(self) -> Dict[str, List[str]]:
         """
         get part of speeches
