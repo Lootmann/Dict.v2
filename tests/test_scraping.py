@@ -100,8 +100,30 @@ class TestScraping(unittest.TestCase):
     def test_get_conjugation_table(self):
         tests = [
             ("hello", {}),
-            ("take", {"原形": "take", "現在分詞": "taking", "過去形": "took", "過去分詞": "taken", "三人称単数現在": "takes"}),
-            ("set", {"原形": "set", "現在分詞": "setting", "過去形": "set", "過去分詞": "set", "三人称単数現在": "sets"}),
+            (
+                "take",
+                {
+                    "conjugation_table": {
+                        "原形": "take",
+                        "現在分詞": "taking",
+                        "過去形": "took",
+                        "過去分詞": "taken",
+                        "三人称単数現在": "takes",
+                    }
+                },
+            ),
+            (
+                "set",
+                {
+                    "conjugation_table": {
+                        "原形": "set",
+                        "現在分詞": "setting",
+                        "過去形": "set",
+                        "過去分詞": "set",
+                        "三人称単数現在": "sets",
+                    }
+                },
+            ),
         ]
 
         for word, table in tests:
