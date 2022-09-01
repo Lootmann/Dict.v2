@@ -3,7 +3,7 @@ from pathlib import Path
 
 from src.cache import Cache
 
-PATH = Path(".") / ".cache" / "dict"
+PATH = Path("~").expanduser() / ".cache" / "dict"
 
 
 def test_cache_path():

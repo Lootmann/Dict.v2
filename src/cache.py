@@ -10,7 +10,7 @@ class Cache:
     NOTE: PARENT_PATH should be '~/.cache/dict'
     """
 
-    PARENT_PATH = Path("~/program/projects/Dict.v2").expanduser() / ".cache" / "dict"
+    PARENT_PATH = Path("~").expanduser() / ".cache" / "dict"
 
     @classmethod
     def cache_path(cls) -> Path:
