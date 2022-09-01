@@ -49,11 +49,11 @@ $ dict hello world
 
 ### cli.py
 
-- [ ] `json` or `dict` をいい感じに出力 (stdout)
+- [x] `json` or `dict` をいい感じに出力 (stdout)
 
 ### main.py
 
-- [ ] とりまとめ
+- [x] とりまとめ
 
 ### parsing.py
 
@@ -62,5 +62,5 @@ $ dict hello world
 
 ### scraping.py
 
-- [ ] 取得した html を `BeautifulSoup` で 要素抽出
-- [ ] html -> scraping -> dict -> json(cache) でよいはず ?
+- [x] 取得した html を `BeautifulSoup` で 要素抽出
+- [x] html -> scraping -> dict -> json(cache) でよいはず ?
