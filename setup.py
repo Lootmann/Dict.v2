@@ -8,14 +8,14 @@ def load_requirements() -> list:
 
 
 setup(
-    name="tmp",
+    name="mydictionary",
     version="0.1",
     description="Simple English Japanese Dictionary via WeblioAPI",
     author="Lootmann",
-    packages=find_packages(),
+    packages=find_packages(where="dict"),
     entry_points={
         "console_scripts": [
-            "dict=src.main:main",
+            "dict=dict.main:main",
         ],
     },
     install_requires=load_requirements(),
