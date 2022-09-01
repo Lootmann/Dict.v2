@@ -16,6 +16,16 @@ class CLI:
         print("[見出し語]", cached_json["headword"])
         print("[主な意味]", cached_json["description"])
 
+        if "conjugation_table" in cached_json:
+            max_pos_len = 0
+            for part_of_speech in cached_json["conjugation_table"].keys():
+                max_pos_len = max(max_pos_len, len(part_of_speech))
+
+            # leading margin
+            print()
+            for pos, spell in cached_json["conjugation_table"].items():
+                print("{}{}: {}".format("　" * (max_pos_len - len(pos)), pos, spell))
+
         print()
 
         for part_of_speech in [
