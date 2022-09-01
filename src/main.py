@@ -1,9 +1,9 @@
 # src/main.py
-from api import fetch_html_from_weblio
-from cache import Cache
-from cli import CLI
-from parsing import parsing
-from scraping import Scraper
+from src.api import fetch_html_from_weblio
+from src.cache import Cache
+from src.cli import CLI
+from src.parsing import parsing
+from src.scraping import Scraper
 
 
 def main():
