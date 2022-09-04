@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 from typing import Dict
 
-from src.scraping import Scraper
+from dict.scraping import Scraper
 
 
 class TestScraping(unittest.TestCase):
