@@ -129,3 +129,20 @@ class TestScraping(unittest.TestCase):
         for word, table in tests:
             if TestScraping.soups[word].exists:
                 assert TestScraping.soups[word].get_conjugation_table() == table
+
+    def test_get_examples(self):
+        tests = [
+            ("hello", True),
+            ("hoge", True),
+            ("take", True),
+            ("beautifulness", True),
+        ]
+
+        for word, has_examples in tests:
+            if TestScraping.soups[word].exists:
+                print("> ", word)
+                TestScraping.soups[word].get_examples()
+                print("\ /")
+                print(" X")
+                print("/ \\")
+            print()
