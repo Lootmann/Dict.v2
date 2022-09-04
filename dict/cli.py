@@ -53,3 +53,10 @@ class CLI:
                 print(f"[{part_of_speech}]")
                 for line in cached_json[part_of_speech]:
                     print("  ", line)
+
+        # Examples
+        for keyword in ["結果例文", "含む例文", "類似例文"]:
+            if keyword in cached_json and len(cached_json[keyword]) > 0:
+                print(f">>> {keyword}")
+                for line in cached_json[keyword]:
+                    print("  ", line)
