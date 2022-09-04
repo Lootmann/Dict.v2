@@ -36,6 +36,7 @@ class Scraper:
         }
         word_info.update(self.get_part_of_speech())
         word_info.update(self.get_conjugation_table())
+        word_info.update(self.get_examples())
         return word_info
 
     def get_headword(self) -> str:
@@ -182,7 +183,6 @@ class Scraper:
 
         pattern 1. 例文検索結果
             #hideDictPrsEGRKJ
-            #hideDictPrsEGRKJ > div.mainBlock.hlt_SNTCE > div.kijiWrp > div > div:nth-child(2)
 
         pattern 2. を含む例文一覧
             #hideDictPrsKENEJ
@@ -210,50 +210,83 @@ class Scraper:
         similar_exs = self._soup.select("#hideDictPrsWERBJ > div.mainBlock.hlt_WERBJ > div.kijiWrp > div.kiji")
 
         if result_exs:
-            print("result")
+            kiji = result_exs[0]
+            examples["結果例文"] += self._get_examples_by_result(kiji)
 
         if contain_exs1:
             kiji = contain_exs1[0]
-
-            for qotC in kiji.find_all("div", class_="qotC"):
-                words = []
-                mean = []
-                for child in qotC:
-                    class_name = child["class"][0]
-                    if class_name == "qotCE":
-                        for elem in child:
-                            if elem.name == "b" and elem.get("class", None) is not None:
-                                continue
-
-                            if elem.name == "span":
-                                continue
-
-                            word = elem.get_text().strip()
-
-                            if type(elem) == NavigableString and word == "":
-                                continue
-
-                            if word != "":
-                                words.append(word)
-
-                    if class_name == "qotCJ":
-                        for elem in child:
-                            word = elem.get_text().strip()
-                            if elem.name != "span" and word != "":
-                                mean.append(word)
-
-                examples["結果例文"].append(" ".join(words) + " : " + " ".join(mean))
+            examples["含む例文"] += self._get_examples_by_result(kiji)
 
         if contain_exs2:
-            print("contain 2")
+            kiji = contain_exs2[0]
+            examples["含む例文"] += self._get_examples_by_result(kiji)
 
         if contain_exs3:
-            print("contain 3")
+            kiji = contain_exs3[0]
+            examples["含む例文"] += self._get_examples_by_result(kiji)
 
         if similar_exs:
-            print("similar")
+            examples["類似例文"] += self._get_examples_by_similar(similar_exs[0])
+
+        print()
 
         return examples
+
+    def _get_examples_by_result(self, kiji) -> List[str]:
+        result = []
+        for qotC in kiji.find_all("div", class_="qotC"):
+            words = []
+            means = []
+
+            for child in qotC:
+                class_name = child["class"][0]
+                if class_name == "qotCE":
+                    for elem in child:
+                        if elem.name == "b" and elem.get("class", None) is not None:
+                            continue
+
+                        if elem.name == "span":
+                            continue
+
+                        word = elem.get_text().strip()
+
+                        if type(elem) == NavigableString and word == "":
+                            continue
+
+                        if word != "":
+                            words.append(word)
+
+                if class_name == "qotCJ":
+                    for elem in child:
+                        word = elem.get_text().strip()
+                        if elem.name != "span" and word != "":
+                            means.append(word)
+
+            result.append(" ".join(words) + " : " + " ".join(means))
+
+        return result
+
+    def _get_examples_by_similar(self, kiji) -> List[str]:
+        result = []
+
+        japanese = kiji.find_all("div", class_="werbjJ")
+        english = kiji.find_all("div", class_="werbjE")
+
+        for jpa, eng in zip(japanese, english):
+            words = []
+            means = []
+
+            for elem in jpa:
+                if elem.name == "p":
+                    words.append(elem.get_text())
+
+            for elem in eng:
+                if elem.name == "p":
+                    means.append(elem.get_text())
+
+            result.append("".join(words) + " : " + "".join(means))
+
+        return result
 
     def __str__(self) -> str:
         """NOTE: temporary method, never use it on product"""
