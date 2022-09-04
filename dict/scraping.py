@@ -3,6 +3,7 @@ import unicodedata
 from typing import Dict, List
 
 from bs4 import BeautifulSoup as bs
+from bs4 import NavigableString
 
 
 class Scraper:
@@ -51,7 +52,7 @@ class Scraper:
         get word description
         <span> class="content-explanation ej"
 
-        some (wrong) idioms have not description,
+        some (wrong) idioms have no description,
         at this time, return empty string "",
 
         @return: str - description
@@ -127,7 +128,7 @@ class Scraper:
         if not articles:
             return {}
 
-        d_part_of_speech: Dict[str : str | List[str]] = {}
+        d_part_of_speech: Dict[str, str | List[str]] = {}
         part_of_speech = ""
         lines = []
 
