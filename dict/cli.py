@@ -14,7 +14,9 @@ class CLI:
             return
 
         print("[見出し語]", cached_json["headword"])
-        print("[主な意味]", cached_json["description"])
+
+        if cached_json["description"] != "":
+            print("[主な意味]", cached_json["description"])
 
         if "conjugation_table" in cached_json:
             max_pos_len = 0
