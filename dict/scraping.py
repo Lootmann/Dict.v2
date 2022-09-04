@@ -175,6 +175,86 @@ class Scraper:
 
         return d_part_of_speech
 
+    def get_examples(self) -> Dict[str, List[str]]:
+        """
+        get examples
+        Weblio have many shitty structures, examples are 3 pattern of html attributes
+
+        pattern 1. 例文検索結果
+            #hideDictPrsEGRKJ
+            #hideDictPrsEGRKJ > div.mainBlock.hlt_SNTCE > div.kijiWrp > div > div:nth-child(2)
+
+        pattern 2. を含む例文一覧
+            #hideDictPrsKENEJ
+            #hideDictPrsJSTKG
+            #hideDictPrsJMDCT
+
+        pattern 3. に類似した例文
+            #hideDictPrsWERBJ
+
+
+        @return: Dict[]
+        """
+        examples = {
+            "結果例文": [],  # pattern 1
+            "含む例文": [],  # pattern 2
+            "類似例文": [],  # pattern 3
+        }
+
+        result_exs = self._soup.select("#hideDictPrsEGRKJ > div.mainBlock.hlt_SNTCE > div.kijiWrp > div.kiji")
+
+        contain_exs1 = self._soup.select("#hideDictPrsKENEJ > div.mainBlock.hlt_SNTCE > div.kijiWrp > div.kiji")
+        contain_exs2 = self._soup.select("#hideDictPrsJSTKG > div.mainBlock.hlt_SNTCE > div.kijiWrp > div.kiji")
+        contain_exs3 = self._soup.select("#hideDictPrsJMDCT > div.mainBlock.hlt_SNTCE > div.kijiWrp > div.kiji")
+
+        similar_exs = self._soup.select("#hideDictPrsWERBJ > div.mainBlock.hlt_WERBJ > div.kijiWrp > div.kiji")
+
+        if result_exs:
+            print("result")
+
+        if contain_exs1:
+            kiji = contain_exs1[0]
+
+            for qotC in kiji.find_all("div", class_="qotC"):
+                words = []
+                mean = []
+                for child in qotC:
+                    class_name = child["class"][0]
+                    if class_name == "qotCE":
+                        for elem in child:
+                            if elem.name == "b" and elem.get("class", None) is not None:
+                                continue
+
+                            if elem.name == "span":
+                                continue
+
+                            word = elem.get_text().strip()
+
+                            if type(elem) == NavigableString and word == "":
+                                continue
+
+                            if word != "":
+                                words.append(word)
+
+                    if class_name == "qotCJ":
+                        for elem in child:
+                            word = elem.get_text().strip()
+                            if elem.name != "span" and word != "":
+                                mean.append(word)
+
+                examples["結果例文"].append(" ".join(words) + " : " + " ".join(mean))
+
+        if contain_exs2:
+            print("contain 2")
+
+        if contain_exs3:
+            print("contain 3")
+
+        if similar_exs:
+            print("similar")
+
+        return examples
+
     def __str__(self) -> str:
         """NOTE: temporary method, never use it on product"""
         return self._soup.prettify()
