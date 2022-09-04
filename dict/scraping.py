@@ -51,10 +51,15 @@ class Scraper:
         get word description
         <span> class="content-explanation ej"
 
+        some (wrong) idioms have not description,
+        at this time, return empty string "",
+
         @return: str - description
         """
         description = self._soup.find(class_="content-explanation ej")
-        return description.get_text().strip()
+        if description is not None:
+            return description.get_text().strip()
+        return ""
 
     def get_conjugation_table(self) -> Dict[str, Dict[str, str]]:
         """
