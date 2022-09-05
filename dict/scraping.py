@@ -125,8 +125,9 @@ class Scraper:
         @return: Dict[str, str | List[str]]
         """
         articles = self._soup.find_all(class_="Kejje")
+        elements = self._soup.find_all(class_="KejjeSub")
 
-        if not articles:
+        if not articles or not elements:
             return {}
 
         d_part_of_speech: Dict[str, str | List[str]] = {}
