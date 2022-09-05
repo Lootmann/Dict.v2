@@ -229,8 +229,6 @@ class Scraper:
         if similar_exs:
             examples["類似例文"] += self._get_examples_by_similar(similar_exs[0])
 
-        print()
-
         return examples
 
     def _get_examples_by_result(self, kiji) -> List[str]:
