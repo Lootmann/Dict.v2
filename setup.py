@@ -9,7 +9,7 @@ def load_requirements() -> list:
 
 setup(
     name="mydictionary",
-    version="0.1",
+    version="0.2",
     description="Simple English Japanese Dictionary via WeblioAPI",
     author="Lootmann",
     packages=find_packages(),
