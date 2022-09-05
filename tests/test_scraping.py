@@ -3,6 +3,7 @@ import unittest
 from pathlib import Path
 from typing import Dict
 
+from dict.api import fetch_html_from_weblio
 from dict.scraping import Scraper
 
 
@@ -17,16 +18,20 @@ class TestScraping(unittest.TestCase):
         test cache file are on
             ~/.cache/dict/<word>.html
         """
-        words = ["hello", "hoge", "take", "beautifulness", "set", "kjsdhfkjds"]
+        words = ["hello", "hoge", "take", "beautifulness", "set", "in order to", "kjsdhfkjds"]
 
         for word in words:
             path = (Path(".") / ".cache" / "dict").expanduser()
             filepath = path / f"{word}.html"
 
+            if not filepath.exists():
+                print(">>> create test cache")
+                html = fetch_html_from_weblio(word)
+                with open(str(filepath), "w") as f:
+                    f.write(html)
+
             if filepath.exists():
                 cls.soups[word] = Scraper(filepath.read_text())
-            else:
-                raise ValueError("wow", word)
 
     def test_exists(self):
         tests = [
@@ -136,13 +141,15 @@ class TestScraping(unittest.TestCase):
             ("hoge", True),
             ("take", True),
             ("beautifulness", True),
+            ("in order to", True),
         ]
+
+        from pprint import pprint as p
 
         for word, has_examples in tests:
             if TestScraping.soups[word].exists:
-                print("> ", word)
-                TestScraping.soups[word].get_examples()
-                print("\ /")
+                print("\\ /")
                 print(" X")
                 print("/ \\")
-            print()
+                print(f">>> {word}")
+                p(TestScraping.soups[word].get_examples())
