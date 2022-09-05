@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from src.parsing import parsing
+from dict.parsing import parsing
 
 
 def test_parse():

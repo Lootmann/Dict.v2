@@ -3,6 +3,7 @@ import unicodedata
 from typing import Dict, List
 
 from bs4 import BeautifulSoup as bs
+from bs4 import NavigableString
 
 
 class Scraper:
@@ -35,6 +36,7 @@ class Scraper:
         }
         word_info.update(self.get_part_of_speech())
         word_info.update(self.get_conjugation_table())
+        word_info.update(self.get_examples())
         return word_info
 
     def get_headword(self) -> str:
@@ -51,10 +53,15 @@ class Scraper:
         get word description
         <span> class="content-explanation ej"
 
+        some (wrong) idioms have no description,
+        at this time, return empty string "",
+
         @return: str - description
         """
         description = self._soup.find(class_="content-explanation ej")
-        return description.get_text().strip()
+        if description is not None:
+            return description.get_text().strip()
+        return ""
 
     def get_conjugation_table(self) -> Dict[str, Dict[str, str]]:
         """
@@ -118,11 +125,12 @@ class Scraper:
         @return: Dict[str, str | List[str]]
         """
         articles = self._soup.find_all(class_="Kejje")
+        elements = self._soup.find_all(class_="KejjeSub")
 
-        if not articles:
+        if not articles or not elements:
             return {}
 
-        d_part_of_speech: Dict[str : str | List[str]] = {}
+        d_part_of_speech: Dict[str, str | List[str]] = {}
         part_of_speech = ""
         lines = []
 
@@ -168,6 +176,118 @@ class Scraper:
                 d_part_of_speech[part_of_speech].append("".join(lines))
 
         return d_part_of_speech
+
+    def get_examples(self) -> Dict[str, List[str]]:
+        """
+        get examples
+        Weblio have many shitty structures, examples are 3 pattern of html attributes
+
+        pattern 1. 例文検索結果
+            #hideDictPrsEGRKJ
+
+        pattern 2. を含む例文一覧
+            #hideDictPrsKENEJ
+            #hideDictPrsJSTKG
+            #hideDictPrsJMDCT
+
+        pattern 3. に類似した例文
+            #hideDictPrsWERBJ
+
+
+        @return: Dict[]
+        """
+        examples = {
+            "結果例文": [],  # pattern 1
+            "含む例文": [],  # pattern 2
+            "類似例文": [],  # pattern 3
+        }
+
+        result_exs = self._soup.select("#hideDictPrsEGRKJ > div.mainBlock.hlt_SNTCE > div.kijiWrp > div.kiji")
+
+        contain_exs1 = self._soup.select("#hideDictPrsKENEJ > div.mainBlock.hlt_SNTCE > div.kijiWrp > div.kiji")
+        contain_exs2 = self._soup.select("#hideDictPrsJSTKG > div.mainBlock.hlt_SNTCE > div.kijiWrp > div.kiji")
+        contain_exs3 = self._soup.select("#hideDictPrsJMDCT > div.mainBlock.hlt_SNTCE > div.kijiWrp > div.kiji")
+
+        similar_exs = self._soup.select("#hideDictPrsWERBJ > div.mainBlock.hlt_WERBJ > div.kijiWrp > div.kiji")
+
+        if result_exs:
+            kiji = result_exs[0]
+            examples["結果例文"] += self._get_examples_by_result(kiji)
+
+        if contain_exs1:
+            kiji = contain_exs1[0]
+            examples["含む例文"] += self._get_examples_by_result(kiji)
+
+        if contain_exs2:
+            kiji = contain_exs2[0]
+            examples["含む例文"] += self._get_examples_by_result(kiji)
+
+        if contain_exs3:
+            kiji = contain_exs3[0]
+            examples["含む例文"] += self._get_examples_by_result(kiji)
+
+        if similar_exs:
+            examples["類似例文"] += self._get_examples_by_similar(similar_exs[0])
+
+        print()
+
+        return examples
+
+    def _get_examples_by_result(self, kiji) -> List[str]:
+        result = []
+        for qotC in kiji.find_all("div", class_="qotC"):
+            words = []
+            means = []
+
+            for child in qotC:
+                class_name = child["class"][0]
+                if class_name == "qotCE":
+                    for elem in child:
+                        if elem.name == "b" and elem.get("class", None) is not None:
+                            continue
+
+                        if elem.name == "span":
+                            continue
+
+                        word = elem.get_text().strip()
+
+                        if type(elem) == NavigableString and word == "":
+                            continue
+
+                        if word != "":
+                            words.append(word)
+
+                if class_name == "qotCJ":
+                    for elem in child:
+                        word = elem.get_text().strip()
+                        if elem.name != "span" and word != "":
+                            means.append(word)
+
+            result.append(" ".join(words) + " : " + " ".join(means))
+
+        return result
+
+    def _get_examples_by_similar(self, kiji) -> List[str]:
+        result = []
+
+        japanese = kiji.find_all("div", class_="werbjJ")
+        english = kiji.find_all("div", class_="werbjE")
+
+        for jpa, eng in zip(japanese, english):
+            words = []
+            means = []
+
+            for elem in jpa:
+                if elem.name == "p":
+                    words.append(elem.get_text())
+
+            for elem in eng:
+                if elem.name == "p":
+                    means.append(elem.get_text())
+
+            result.append("".join(words) + " : " + "".join(means))
+
+        return result
 
     def __str__(self) -> str:
         """NOTE: temporary method, never use it on product"""

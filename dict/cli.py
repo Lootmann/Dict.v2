@@ -14,7 +14,9 @@ class CLI:
             return
 
         print("[見出し語]", cached_json["headword"])
-        print("[主な意味]", cached_json["description"])
+
+        if cached_json["description"] != "":
+            print("[主な意味]", cached_json["description"])
 
         if "conjugation_table" in cached_json:
             max_pos_len = 0
@@ -50,4 +52,11 @@ class CLI:
             if part_of_speech in cached_json:
                 print(f"[{part_of_speech}]")
                 for line in cached_json[part_of_speech]:
+                    print("  ", line)
+
+        # Examples
+        for keyword in ["結果例文", "含む例文", "類似例文"]:
+            if keyword in cached_json and len(cached_json[keyword]) > 0:
+                print(f">>> {keyword}")
+                for line in cached_json[keyword]:
                     print("  ", line)

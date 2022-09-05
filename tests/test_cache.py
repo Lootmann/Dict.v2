@@ -1,7 +1,7 @@
 # tests/test_cache.py
 from pathlib import Path
 
-from src.cache import Cache
+from dict.cache import Cache
 
 PATH = Path("~").expanduser() / ".cache" / "dict"
 
