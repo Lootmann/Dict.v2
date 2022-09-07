@@ -60,3 +60,4 @@ class CLI:
                 print(f">>> {keyword}")
                 for line in cached_json[keyword]:
                     print("  ", line)
+            print()
