@@ -1,4 +1,4 @@
-# src/parsing.py
+# dict/parsing.py
 
 import argparse
 

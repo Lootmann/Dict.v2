@@ -1,4 +1,4 @@
-# src/scraping.py
+# dict/scraping.py
 import unicodedata
 from typing import Dict, List
 

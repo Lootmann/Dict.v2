@@ -1,4 +1,4 @@
-# src/cache.py
+# dict/cache.py
 import json
 from pathlib import Path
 
@@ -6,8 +6,6 @@ from pathlib import Path
 class Cache:
     """
     Cache Manager
-
-    NOTE: PARENT_PATH should be '~/.cache/dict'
     """
 
     PARENT_PATH = Path("~/.cache/dict").expanduser()
@@ -16,9 +14,6 @@ class Cache:
     def cache_path(cls) -> Path:
         """
         get cache_path
-
-        TODO: Path(".").parent is temporary path while developing
-            finally cache_path is '~/.cache/dict/'
 
         @return: pathlib.Path - cache path
         """
@@ -30,8 +25,17 @@ class Cache:
         """
         create cache dir
 
-        .mkdir(parents=True) means when middle dir(/.cache/middle/middle/dict/) is not created,
-            create all dirs automatically
+        .mkdir(parents=True) is a method that creates an intermediate directory
+        when a directory is created
+
+        > tree ~/.cache/
+        .cache/
+
+        > (~/.cache/middle/middle/dict).mkdir(parent=True)
+
+        > tree ~/.cache/
+        .cache/
+            middle/middle/dict/
         """
         cache_path = cls.cache_path()
         if not cache_path.exists():
@@ -53,8 +57,8 @@ class Cache:
         """
         read cache
 
-        @param filename:
-        @return:
+        @param str: filename
+        @return: dict parsed json
         """
         path = cls.cache_path() / f"{filename}.json"
 

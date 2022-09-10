@@ -1,4 +1,4 @@
-# src/main.py
+# dict/main.py
 from dict.api import fetch_html_from_weblio
 from dict.cache import Cache
 from dict.cli import CLI
